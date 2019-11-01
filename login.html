@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Login Page</title>
+	<script>
+
+		function reqJSON(method, url, data){
+			return new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.open(method, url);
+				xhr.responseType = 'json';
+				xhr.onload = () => {
+					const resp = {status: xhr.status, data: xhr.response};
+					if (xhr.status >= 200 && xhr.status < 300){
+						resolve(resp);
+					}
+					else{
+						reject(resp);
+					}
+				};
+				xhr.onerror = () => {
+					reject({status: xhr.status, data: xhr.response});
+				};
+				xhr.send(data)
+			});
+		}
+
+		function signup() {
+			window.location.replace("signup");
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+        const errDiv = document.getElementById('error');
+        const urlParams = new URLSearchParams(window.location.search);
+        const err = urlParams.get('error');
+        if (err != null && err !== "") {
+          errDiv.style.display = 'block';
+          errDiv.innerText = err;
+        }
+      });
+	</script>
+</head>
+<body>
+<div class="container">
+<div class="jumbotron">
+	<h1>Login</h1>
+	<br>
+	<div id="login">
+		<div id ="error"></div>
+		<br>
+		<form action="/login" method="POST">
+            <div class="form-group">
+                <label for="formGroupExampleInput" >Username</label>
+                <input type="text" name="username" class="form-control" id="formGroupExampleInput" placeholder="test">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput2">Password</label>
+                <input type="password" name="password" class="form-control" id="formGroupExampleInput2">
+            </div>
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Login Info</h5>
+					<p class="card-text">Two users root and test, both of them have their usernames as their passwords</p>
+  				</div>
+			</div>
+			<br>
+			<button type="submit" class="btn btn-primary">Login</button>
+        </form>
+	</div>
+	<br>
+	<button id ="register" class="btn btn-success" onclick="signup()">Register</button><br>
+	<form id="oidc_login_form" action="https://accounts.google.com/o/oauth2/v2/auth" method="GET">
+			<input type="hidden" name="client_id" value="572396995965-d6fshqhndku0oiejap026regbrj1g10t.apps.googleusercontent.com">
+      		<input type="hidden" name="redirect_uri">
+      		<input type="hidden" name="response_type" value="code">
+      		<input type="hidden" name="scope" value="openid email">
+      		<input type="hidden" name="state">
+      		<input type="hidden" name="nonce">
+			<br>
+			<button type="submit" class="btn btn-secondary">Login with Google </button>
+		</form>
+		<script>
+			function getCookie(cname) {
+  				var name = cname + "=";
+  				var decodedCookie = decodeURIComponent(document.cookie);
+  				var ca = decodedCookie.split(';');
+  				for(var i = 0; i <ca.length; i++) {
+    			var c = ca[i];
+    			while (c.charAt(0) == ' ') {
+      				c = c.substring(1);
+    			}
+    			if (c.indexOf(name) == 0) {
+      				return c.substring(name.length, c.length);
+    			}
+  			}
+  			return "";
+			}
+      		const form = document.getElementById('oidc_login_form');
+      		form.elements['state'].value = getCookie('oidc_state');
+      		form.elements['nonce'].value = getCookie('oidc_nonce');
+      		console.log('state: ' + getCookie('oidc_state'));
+      		console.log('nonce: ' + getCookie('oidc_nonce'));
+      		form.elements['redirect_uri'].value = window.location.origin + "/oidcauth";
+		</script>
+</div>
+</div>
+</body>
+
+
+</html>
