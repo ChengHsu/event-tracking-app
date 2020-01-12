@@ -1,4 +1,4 @@
-# event-tracking-app
+# Event Tracker
 An AppEngine application that keeps track of upcoming events with an emphasis on Authentication
 
 ## Pasword-Based Authentication
